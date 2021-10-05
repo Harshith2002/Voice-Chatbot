@@ -1,0 +1,66 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>CHATBOT</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <!--jQuery library-->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <!--Latest compiled and minified JavaScript-->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <!--Get your own code at fontawesome.com-->
+        <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+        <!-- Custom CSS -->
+        <link href="style.css" rel="stylesheet">
+    </head>
+    <body style="background-color: skyblue">
+        <button class="btn far fa-comments b1 " onclick="document.getElementById('chat').style.display='block'"></button>
+        <div class="popup" id="chat">
+            <button class="btn b2 " onclick="document.getElementById('chat').style.display='none'">Close</button>
+            <div class="title">
+                <img src="img/bot.png" style="width:70px;height:70px;border-radius:50px;border-left:5px;">
+                <h3 style="text-align:center;margin-top:-50px;">VIT Chatbot</h3>
+            </div>
+            <form action="/external/" method="post">
+                <div class="form">
+                    <div class="bot-inbox">
+                        <div class="bot-pic">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="msg">
+                            <p>I am a chatbot,You can ask me anything about VIT.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-area">
+                    <div class="input-data">
+                        <input id="data" type="text" name="val" placeholder="Type something here..." required>
+                        <button id="btn" onclick="textSpeak()">Send</button>
+                    </div>
+                </div>
+          </form>
+        </div>
+    <script>
+        $(document).ready(function(){
+            $("#btn").on("click", function(){
+                $value = $("#data").val();
+                $msg = '<div class="user-inbox"><div class="msg"><p>'+ $value +'</p></div></div>';
+                $(".form").append($msg);
+                $("#data").val('');
+                $.ajax({
+                    url: 'http://127.0.0.1:8000/api/',
+                    type: 'POST',
+                    data: $value,
+                    success: function(result){
+                        $reply = '<div class="bot-inbox"><div class="bot-pic"><i class="fas fa-user"></i></div><div class="msg"><p>'+ result +'</p></div></div>';
+                        var msg = new SpeechSynthesisUtterance();
+                        msg.text = result;
+                        window.speechSynthesis.speak(msg);
+                        $(".form").append($reply);
+                        $(".form").scrollTop($(".form")[0].scrollHeight);
+                    }
+                });
+            });
+        });
+    </script>
+    </body>
+</html>
